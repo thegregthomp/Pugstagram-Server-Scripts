@@ -1,3 +1,20 @@
 #!/bin/bash
 
-echo "Cool"
+DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+
+case ${@:1:1} in
+	start)
+		cd /var/www
+        docker run -d -p 80:3000 --name pug_web -e ENV=PROD thegregthomp/pugstagram
+    ;;
+    stop)
+		cd /var/www
+        docker stop pug_web
+    ;;
+    setup)
+        cd /var/www
+        docker build -t pugstagram_web .
+        #Remove dangling duplicate images
+        docker rmi $(docker images -f 'dangling=true' -q)
+    ;;
+esac
